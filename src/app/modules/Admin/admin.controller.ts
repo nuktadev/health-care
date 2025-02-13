@@ -1,84 +1,58 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response } from "express";
 import { AdminService } from "./admin.service";
 import pick from "../../../shared/pick";
 import { adminFilterableFields } from "./admin.constant";
 import sendResponse from "../../../shared/send-response";
 import { StatusCodes } from "http-status-codes";
+import catchAsync from "../../../shared/catchAsync";
 
-const getAllFromDb = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const filters = pick(req.query, adminFilterableFields);
-    const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
+const getAllFromDb = catchAsync(async (req: Request, res: Response) => {
+  const filters = pick(req.query, adminFilterableFields);
+  const options = pick(req.query, ["limit", "page", "sortBy", "sortOrder"]);
 
-    const result = await AdminService.getAllFromDb(filters, options);
-    sendResponse(res, {
-      statusCode: StatusCodes.OK,
-      success: true,
-      message: "Admin Create Successfully",
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+  const result = await AdminService.getAllFromDb(filters, options);
 
-const getAdminById = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const result = await AdminService.getAdminById(req.params.id);
-    sendResponse(res, {
-      statusCode: StatusCodes.OK,
-      success: true,
-      message: "Admin By id Successfully",
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Admin Create Successfully",
+    data: result,
+  });
+});
 
-const updateAdmin = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const result = await AdminService.updateAdmin(req.params.id, req.body);
+const getAdminById = catchAsync(async (req: Request, res: Response) => {
+  const result = await AdminService.getAdminById(req.params.id);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Admin By id Successfully",
+    data: result,
+  });
+});
 
-    sendResponse(res, {
-      statusCode: StatusCodes.OK,
-      success: true,
-      message: "Admin Update Successfully",
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
+const updateAdmin = catchAsync(async (req: Request, res: Response) => {
+  const result = await AdminService.updateAdmin(req.params.id, req.body);
 
-const deleteAdmin = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const result = await AdminService.deleteAdmin(req.params.id);
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Admin Update Successfully",
+    data: result,
+  });
+});
 
-    sendResponse(res, {
-      statusCode: StatusCodes.OK,
-      success: true,
-      message: "Admin Delete Successfully",
-      data: result,
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-const softDeleteFromDBAdmin = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
+const deleteAdmin = catchAsync(async (req: Request, res: Response) => {
+  const result = await AdminService.deleteAdmin(req.params.id);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Admin Delete Successfully",
+    data: result,
+  });
+});
+const softDeleteFromDBAdmin = catchAsync(
+  async (req: Request, res: Response) => {
     const result = await AdminService.softDeleteFromDBAdmin(req.params.id);
 
     sendResponse(res, {
@@ -87,10 +61,8 @@ const softDeleteFromDBAdmin = async (
       message: "Admin SoftDeleteFromDB Successfully",
       data: result,
     });
-  } catch (error) {
-    next(error);
   }
-};
+);
 
 export const AdminController = {
   getAdminById,
