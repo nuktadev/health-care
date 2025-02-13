@@ -1,6 +1,7 @@
 import express, { Application } from "express";
 import cors from "cors";
-import { userRouter } from "./app/modules/User/user.route";
+import router from "./app/routes";
+import globalErrorHandler from "./app/middlewares/globalErrorHandler";
 
 const app: Application = express();
 
@@ -12,5 +13,10 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
-app.use("/api/v1/user", userRouter);
+// all routes
+app.use("/api/v1/", router);
+
+// global error
+app.use(globalErrorHandler);
+
 export default app;

@@ -1,58 +1,76 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { UserService } from "./user.service";
+import sendResponse from "../../../shared/send-response";
+import { StatusCodes } from "http-status-codes";
 
-const createAdmin = async (req: Request, res: Response) => {
+const createAdmin = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await UserService.createAdmin(req.body);
-    res.status(201).json(result);
+
+    sendResponse(res, {
+      statusCode: StatusCodes.CREATED,
+      success: true,
+      message: "Admin Create Successfully",
+      data: result,
+    });
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Something went wrong";
-    res.status(500).json({ message: errorMessage });
+    next(error);
   }
 };
 
-const getAllUsers = async (req: Request, res: Response) => {
+const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await UserService.getAllUsers();
-    res.status(200).json(result);
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: "User retrieves Successfully",
+      data: result,
+    });
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Something went wrong";
-    res.status(500).json({ message: errorMessage });
+    next(error);
   }
 };
 
-const getUserById = async (req: Request, res: Response) => {
+const getUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await UserService.getUserById(req.params.id);
-    res.status(200).json(result);
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: "User retrieve Successfully",
+      data: result,
+    });
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Something went wrong";
-    res.status(500).json({ message: errorMessage });
+    next(error);
   }
 };
 
-const updateUser = async (req: Request, res: Response) => {
+const updateUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await UserService.updateUser(req.params.id, req.body);
-    res.status(200).json(result);
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: "User update Successfully",
+      data: result,
+    });
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Something went wrong";
-    res.status(500).json({ message: errorMessage });
+    next(error);
   }
 };
 
-const deleteUser = async (req: Request, res: Response) => {
+const deleteUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const result = await UserService.deleteUser(req.params.id);
-    res.status(200).json(result);
+    sendResponse(res, {
+      statusCode: StatusCodes.OK,
+      success: true,
+      message: "User delete Successfully",
+      data: result,
+    });
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Something went wrong";
-    res.status(500).json({ message: errorMessage });
+    next(error);
   }
 };
 
